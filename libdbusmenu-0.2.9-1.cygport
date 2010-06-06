@@ -1,0 +1,7 @@
+inherit gnome2
+
+
+HOMEPAGE="https://launchpad.net/dbusmenu"
+SRC_URI="http://launchpad.net/dbusmenu/${PV[1]}.${PV[2]}/${PV}/+download/${P}.tar.gz"
+
+CYGCONF_ARGS="--libexecdir=/usr/lib/dbusmenu-${PV[1]}.${PV[2]}"
