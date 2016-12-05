@@ -1,0 +1,90 @@
+inherit python gnome2
+
+NAME="libdbusmenu"
+VERSION=16.04.0
+RELEASE=1
+CATEGORY="Libs"
+SUMMARY="DBus menu passing library"
+DESCRIPTION="This is a small library designed to make sharing and displaying
+of menu structures over DBus simple and easy to use."
+HOMEPAGE="https://launchpad.net/libdbusmenu"
+SRC_URI="${HOMEPAGE}/${VERSION%.*}/${VERSION}/+download/libdbusmenu-${VERSION}.tar.gz"
+
+PKG_NAMES="${NAME}-common ${NAME}-glib4 ${NAME}-glib-devel ${NAME}-glib-doc
+           ${NAME}-gtk4 ${NAME}-gtk-devel ${NAME}-gtk-doc
+           ${NAME}-gtk3_4 ${NAME}-gtk3-devel
+           ${NAME}-jsonloader4 ${NAME}-jsonloader-devel ${NAME}-tools
+           girepository-Dbusmenu0.4 girepository-DbusmenuGtk0.4 girepository-DbusmenuGtk3_0.4
+           vala-dbusmenu-glib vala-dbusmenu-gtk vala-dbusmenu-gtk3"
+libdbusmenu_common_CONTENTS="usr/share/doc/libdbusmenu/"
+libdbusmenu_glib4_REQUIRES="${NAME}-common"
+libdbusmenu_glib4_CONTENTS="usr/bin/cygdbusmenu-glib-4.dll"
+libdbusmenu_glib_devel_CONTENTS="
+	usr/include/libdbusmenu-glib-0.4/libdbusmenu-glib/
+	usr/lib/libdbusmenu-glib.dll.a
+	usr/lib/pkgconfig/dbusmenu-glib-0.4.pc
+"
+libdbusmenu_glib_doc_CATEGORY="Doc"
+libdbusmenu_glib_doc_CONTENTS="usr/share/gtk-doc/html/libdbusmenu-glib/"
+libdbusmenu_gtk4_SUMMARY="${SUMMARY} for GTK+ 2"
+libdbusmenu_gtk4_CONTENTS="usr/bin/cygdbusmenu-gtk-4.dll"
+libdbusmenu_gtk_devel_SUMMARY=${libdbusmenu_gtk4_SUMMARY}
+libdbusmenu_gtk_devel_CONTENTS="
+	usr/include/libdbusmenu-gtk-0.4/
+	usr/lib/libdbusmenu-gtk.dll.a
+	usr/lib/pkgconfig/dbusmenu-gtk-0.4.pc
+"
+libdbusmenu_gtk_doc_CATEGORY="Doc"
+libdbusmenu_gtk_doc_CONTENTS="usr/share/gtk-doc/html/libdbusmenu-gtk/"
+libdbusmenu_gtk3_4_SUMMARY="${SUMMARY} for GTK+ 3"
+libdbusmenu_gtk3_4_REQUIRES="${NAME}-common"
+libdbusmenu_gtk3_4_CONTENTS="usr/bin/cygdbusmenu-gtk3-4.dll"
+libdbusmenu_gtk3_devel_SUMMARY=${libdbusmenu_gtk3_4_SUMMARY}
+libdbusmenu_gtk3_devel_CONTENTS="
+	usr/include/libdbusmenu-gtk3-0.4/
+	usr/lib/libdbusmenu-gtk3.dll.a
+	usr/lib/pkgconfig/dbusmenu-gtk3-0.4.pc
+"
+libdbusmenu_jsonloader4_SUMMARY="DBus menu JSON loader library"
+libdbusmenu_jsonloader4_CONTENTS="usr/bin/cygdbusmenu-jsonloader-4.dll"
+libdbusmenu_jsonloader_devel_SUMMARY=${libdbusmenu_jsonloader4_SUMMARY}
+libdbusmenu_jsonloader_devel_CONTENTS="
+	usr/include/libdbusmenu-glib-0.4/libdbusmenu-jsonloader/
+	usr/lib/libdbusmenu-jsonloader.dll.a
+	usr/lib/pkgconfig/dbusmenu-jsonloader-0.4.pc
+"
+libdbusmenu_tools_CATEGORY="Utils"
+libdbusmenu_tools_CONTENTS="${SUMMARY} test utilities"
+libdbusmenu_tools_CONTENTS="
+	usr/libexec/dbusmenu-*
+	usr/share/libdbusmenu/json/test-gtk-label.json
+"
+girepository_Dbusmenu0_4_CONTENTS="usr/*/gir*-1.0/Dbusmenu-0.4.*"
+girepository_DbusmenuGtk0_4_CONTENTS="usr/*/gir*-1.0/DbusmenuGtk-0.4.*"
+girepository_DbusmenuGtk3_0_4_CONTENTS="usr/*/gir*-1.0/DbusmenuGtk3-0.4.*"
+vala_dbusmenu_glib_CONTENTS="usr/share/vala/vapi/Dbusmenu-*"
+vala_dbusmenu_gtk_CONTENTS="usr/share/vala/vapi/DbusmenuGtk-*"
+vala_dbusmenu_gtk3_CONTENTS="usr/share/vala/vapi/DbusmenuGtk3-*"
+
+# this hasn't been updated in far too long
+CFLAGS+=" -Wno-error=deprecated-declarations"
+
+src_compile() {
+	cd ${S}
+	gnome2_autoreconf
+
+	mkdir -p ${B}/gtk2
+	cd ${B}/gtk2
+	gnome2_compile --with-gtk=2
+
+	mkdir -p ${B}/gtk3
+	cd ${B}/gtk3
+	gnome2_compile --with-gtk=3
+}
+
+src_install() {
+	cd ${B}/gtk3
+	cyginstall
+	cd ${B}/gtk2
+	cyginstall
+}
